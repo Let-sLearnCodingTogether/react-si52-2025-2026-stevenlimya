@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { NavLink } from "react-router"
+import ApiClient from "../../utils/ApiClient"
 
-interface Movies{
+interface Movie{
     _id : string,
     judul : string,
     tahunRilis : string,
@@ -11,7 +12,19 @@ interface Movies{
 }
 
 function Movies(){
-    const [movies, setMovies] = useState([])
+    const [movies, setMovies] = useState<Movie[]>([])
+
+    const fetchMovies = useCallback(async () => {
+        const response = await ApiClient.get("/movie")
+
+        if(response.status == 200){
+            setMovies(response.data.data)
+        }
+    }, [])
+    useEffect(() => {
+        fetchMovies()
+    }, [fetchMovies])
+
     return <div className="container mx-auto">
         <div className="d-flex justify-content-between mb-3">
         <h2>Movie page</h2>
