@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
-import { NavLink } from "react-router";
-import ApiClient from "../../utils/ApiClient";
+import { useCallback, useEffect, useState } from "react"
+import { NavLink } from "react-router"
+import ApiClient from "../../utils/ApiClient"
 import Table from 'react-bootstrap/Table';
-import { Button } from "react-bootstrap";
 
-interface Movie {
+interface Movie{
     _id : string,
     judul : string,
     tahunRilis : string,
@@ -13,29 +12,26 @@ interface Movie {
     updatedAt : string
 }
 
-function Movies() {
+function Movies (){
     const [movies, setMovies] = useState<Movie[]>([])
-
-    const [loading, setLoading] = useState<Boolean>(true)
+    const [loading, setLoading] = useState<boolean>(true)
 
     const fetchMovies = useCallback(async () => {
         setLoading(true)
-        const response = await ApiClient.get('/movies')
+        const response = await ApiClient.get("/movie")
 
         if(response.status == 200){
             setMovies(response.data.data)
             setLoading(false)
         }
-    }, [
+    }, [])
 
-    ])
+    useEffect(()=> {
+        fetchMovies();
+    }, [fetchMovies]);
 
-    useEffect(() => {
-        fetchMovies()
-    }, [fetchMovies])
-
-    const handleDelete = async (movieId : string) => {
-        const response = await ApiClient.delete(`/movies/${movieId}`)
+    const handleDelete = async (movieId: String) =>{
+        const response = await ApiClient.delete(`/movie/${movieId}`)
 
         if(response.status == 200){
             fetchMovies()
@@ -44,17 +40,19 @@ function Movies() {
 
     return <div className="container mx-auto">
         <div className="d-flex justify-content-between mb-3">
-            <h4>Movie Page</h4>
-            <NavLink to="/movies/add-movie" className="btn btn-primary">Add Movie</NavLink>
+        <h2 style={{ color: "#662222" }} > Movie Page </h2>
+        <NavLink to="/add-movie"style={{ backgroundColor: "#EE6983", borderColor: "#ff0a54" }} className="btn btn-primary">Add Movie</NavLink>
         </div>
         <div>
             <Table striped bordered hover>
                 <thead>
+                    <tr>
                     <th>No</th>
                     <th>Judul</th>
                     <th>Tahun Rilis</th>
                     <th>Sutradara</th>
                     <th>Aksi</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {
@@ -63,13 +61,13 @@ function Movies() {
                         </tr>
                     }
                     {
-                        movies.length > 0 && movies.map((movies, index) => {
-                            return <tr key={movies._id}>
-                                <td>{index + 1}</td>
-                                <td>{movies.judul}</td>
-                                <td>{movies.tahunRilis}</td>
-                                <td>{movies.sutradara}</td>
-                                <td><Button variant="danger" onClick={() => handleDelete(movies._id)}>Delete</Button></td>
+                        movies.length > 0 && movies.map((movie,index)=>{
+                            return <tr key={movie._id}>
+                            <td>{index+1}</td>
+                            <td>{movie.judul}</td>
+                            <td>{movie.tahunRilis}</td>
+                            <td>{movie.sutradara}</td>
+                            <td> <button className="btn btn-danger" onClick={()=>handleDelete(movie._id)}>Delete</button></td>
                             </tr>
                         })
                     }
@@ -79,4 +77,4 @@ function Movies() {
     </div>
 }
 
-export default Movies;
+export default Movies
