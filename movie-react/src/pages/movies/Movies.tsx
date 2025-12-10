@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 import { NavLink } from "react-router"
 import ApiClient from "../../utils/ApiClient"
-import Table from 'react-bootstrap/Table';
+import { Button, Table } from "react-bootstrap"
 
-interface Movie{
+interface Movie {
     _id : string,
     judul : string,
     tahunRilis : string,
@@ -12,62 +12,63 @@ interface Movie{
     updatedAt : string
 }
 
-function Movies (){
+function Movies() {
     const [movies, setMovies] = useState<Movie[]>([])
     const [loading, setLoading] = useState<boolean>(true)
 
     const fetchMovies = useCallback(async () => {
-        setLoading(true)
-        const response = await ApiClient.get("/movie")
+        const response = await ApiClient.get("/movies")
 
-        if(response.status == 200){
+        if(response.status == 200) {
             setMovies(response.data.data)
             setLoading(false)
         }
     }, [])
 
-    useEffect(()=> {
-        fetchMovies();
-    }, [fetchMovies]);
+    useEffect(() => {
+        fetchMovies()
+    }, [fetchMovies])
 
-    const handleDelete = async (movieId: String) =>{
-        const response = await ApiClient.delete(`/movie/${movieId}`)
+    const handleDelete = async (movieId: String) => {
+        const response = await ApiClient.delete(`/movies/${movieId}`)
 
-        if(response.status == 200){
+        if (response.status == 200) {
             fetchMovies()
         }
     }
 
     return <div className="container mx-auto">
-        <div className="d-flex justify-content-between mb-3">
-        <h2 style={{ color: "#662222" }} > Movie Page </h2>
-        <NavLink to="/add-movie"style={{ backgroundColor: "#EE6983", borderColor: "#ff0a54" }} className="btn btn-primary">Add Movie</NavLink>
+        <div className ="d-flex justify-content-between mb-3">
+            <h2> Movie Page </h2>
+            <NavLink to="/movies/add-movie" className="btn btn-primary"> Add Movies </NavLink>
         </div>
         <div>
-            <Table striped bordered hover>
+            <Table className="table table-striped">
                 <thead>
-                    <tr>
-                    <th>No</th>
-                    <th>Judul</th>
-                    <th>Tahun Rilis</th>
-                    <th>Sutradara</th>
-                    <th>Aksi</th>
-                    </tr>
+                    <th> No </th>
+                    <th> Judul </th>
+                    <th> Tahun Rilis </th>
+                    <th> Sutradara </th>
+                    <th> Aksi </th>
                 </thead>
                 <tbody>
                     {
                         loading && <tr>
-                            <td colSpan={5}>Loading.....</td>
+                            <td colSpan={5}>Loading......</td>
                         </tr>
                     }
+                    
                     {
-                        movies.length > 0 && movies.map((movie,index)=>{
+                        movies.length > 0 && movies.map((movie, index) =>{
                             return <tr key={movie._id}>
-                            <td>{index+1}</td>
-                            <td>{movie.judul}</td>
-                            <td>{movie.tahunRilis}</td>
-                            <td>{movie.sutradara}</td>
-                            <td> <button className="btn btn-danger" onClick={()=>handleDelete(movie._id)}>Delete</button></td>
+                                <td>{index +1}</td>
+                                <td>{movie.judul}</td>
+                                <td>{movie.tahunRilis}</td>
+                                <td>{movie.sutradara}</td>
+                                <td>
+                                    <NavLink to={`/movies/edit-movies/${movie._id}`} className="btn btn-primary"> Edit </NavLink>
+                                    <Button variant="btn"className="btn btn-danger" onClick={() => handleDelete(movie._id)}> Delete </Button>
+                                </td>
                             </tr>
                         })
                     }
