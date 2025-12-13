@@ -1,5 +1,5 @@
 {
-  "name": "react-si52-2025-2026-stevenlim",
+  "name": "movie-react",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "axios": "^1.13.2",
-    "boostrap": "^2.0.0",
     "bootstrap": "^5.3.8",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
